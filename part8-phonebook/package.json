@@ -1,0 +1,15 @@
+{
+  "name": "part8-phonebook",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "des-ant",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^3.5.0",
+    "graphql": "^16.0.1"
+  }
+}
