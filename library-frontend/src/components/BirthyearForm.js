@@ -1,20 +1,31 @@
 import React, { useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
+import Select from 'react-select';
 
 import { EDIT_AUTHOR } from '../queries';
+import { ALL_AUTHORS } from '../queries';
 
 const BirthyearForm = (props) => {
-  const [name, setName] = useState('');
   const [birthyear, setBirthyear] = useState('');
+  const [selectedOption, setSelectedOption] = useState(null);
 
   const [ changeBirthyear ] = useMutation(EDIT_AUTHOR);
+  const result = useQuery(ALL_AUTHORS);
+
+  if (result.loading) {
+    return <div>loading birth year form...</div>;
+  }
+
+  const authors = result.data.allAuthors;
+
+  const options = authors.map(a => ({ value: a.name, label: a.name }));
 
   const submit = async (event) => {
     event.preventDefault();
-    
-    changeBirthyear({ variables: { name, setBornTo: Number(birthyear) } });
 
-    setName('');
+    changeBirthyear({ variables: { name: selectedOption.value, setBornTo: Number(birthyear) } });
+
+    setSelectedOption(null);
     setBirthyear('');
   };
 
@@ -22,13 +33,11 @@ const BirthyearForm = (props) => {
     <div>
       <h2>Set birthyear</h2>
       <form onSubmit={submit}>
-        <div>
-          name
-          <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-          />
-        </div>
+        <Select
+          value={selectedOption}
+          onChange={setSelectedOption}
+          options={options}
+        />
         <div>
           born
           <input
@@ -36,7 +45,7 @@ const BirthyearForm = (props) => {
             onChange={({ target }) => setBirthyear(target.value)}
           />
         </div>
-        <button type='submit'>update author</button>
+        <button type='submit' disabled={selectedOption === null}>update author</button>
       </form>
     </div>
   );
