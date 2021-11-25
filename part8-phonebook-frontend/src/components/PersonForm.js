@@ -9,7 +9,7 @@ const PersonForm = ({ setError }) => {
   const [street, setStreet] = useState('d')
   const [city, setCity] = useState('asfas')
 
-  const [ createPersom ] = useMutation(CREATE_PERSON, {
+  const [ createPerson ] = useMutation(CREATE_PERSON, {
     refetchQueries: [  {query: ALL_PERSONS} ],
     onError: (error) => {
       setError(error.graphQLErrors[0].message)
@@ -19,7 +19,7 @@ const PersonForm = ({ setError }) => {
   const submit = async (event) => {
     event.preventDefault()
 
-    createPersom({
+    createPerson({
       variables: { name, phone, street, city },
       
     })
