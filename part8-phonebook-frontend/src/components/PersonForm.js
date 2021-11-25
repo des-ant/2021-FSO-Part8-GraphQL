@@ -1,21 +1,28 @@
 import React, { useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { CREATE_PERSON, ALL_PERSONS } from '../queries'
 
-const PersonForm = () => {
-  const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [street, setStreet] = useState('')
-  const [city, setCity] = useState('')
+import { ALL_PERSONS, CREATE_PERSON } from '../queries'
 
-  const [ createPerson ] = useMutation(CREATE_PERSON, {
-    refetchQueries: [ { query: ALL_PERSONS } ]
+const PersonForm = ({ setError }) => {
+  const [name, setName] = useState('asd'+Math.random())
+  const [phone, setPhone] = useState('dd')
+  const [street, setStreet] = useState('d')
+  const [city, setCity] = useState('asfas')
+
+  const [ createPersom ] = useMutation(CREATE_PERSON, {
+    refetchQueries: [  {query: ALL_PERSONS} ],
+    onError: (error) => {
+      setError(error.graphQLErrors[0].message)
+    }
   })
 
-  const submit = (event) => {
+  const submit = async (event) => {
     event.preventDefault()
 
-    createPerson({  variables: { name, phone, street, city } })
+    createPersom({
+      variables: { name, phone, street, city },
+      
+    })
 
     setName('')
     setPhone('')
@@ -28,22 +35,26 @@ const PersonForm = () => {
       <h2>create new</h2>
       <form onSubmit={submit}>
         <div>
-          name <input value={name}
+          name <input
+            value={name}
             onChange={({ target }) => setName(target.value)}
           />
         </div>
         <div>
-          phone <input value={phone}
+          phone <input
+            value={phone}
             onChange={({ target }) => setPhone(target.value)}
           />
         </div>
         <div>
-          street <input value={street}
+          street <input
+            value={street}
             onChange={({ target }) => setStreet(target.value)}
           />
         </div>
         <div>
-          city <input value={city}
+          city <input
+            value={city}
             onChange={({ target }) => setCity(target.value)}
           />
         </div>

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useLazyQuery } from '@apollo/client'
+
 import { FIND_PERSON } from '../queries'
 
 const Persons = ({ persons }) => {
-  const [getPerson, result] = useLazyQuery(FIND_PERSON) 
   const [person, setPerson] = useState(null)
+  const [getPerson, result] = useLazyQuery(FIND_PERSON)
 
   const showPerson = (name) => {
     getPerson({ variables: { nameToSearch: name } })
@@ -14,7 +15,7 @@ const Persons = ({ persons }) => {
     if (result.data) {
       setPerson(result.data.findPerson)
     }
-  }, [result])
+  }, [result.data])
 
   if (person) {
     return(
