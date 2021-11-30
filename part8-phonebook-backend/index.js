@@ -78,7 +78,7 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    personCount: () => Person.collection.countDocuments(),
+    personCount: async () => Person.collection.countDocuments(),
     allPersons: async (root, args) => {
       if (!args.phone) {
         return Person.find({})
@@ -86,7 +86,7 @@ const resolvers = {
   
       return Person.find({ phone: { $exists: args.phone === 'YES' } })
     },
-    findPerson: (root, args) => Person.findOne({ name: args.name }),
+    findPerson: async (root, args) => Person.findOne({ name: args.name }),
     me: (root, args, context) => {
       return context.currentUser
     }
@@ -133,8 +133,8 @@ const resolvers = {
       }
       return person
     },
-    createUser: (root, args) => {
-      const user = new User({ username: args.username })
+    createUser: async (root, args) => {
+      const user = await new User({ username: args.username })
   
       return user.save()
         .catch(error => {
