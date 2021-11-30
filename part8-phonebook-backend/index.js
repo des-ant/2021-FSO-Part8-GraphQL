@@ -1,4 +1,4 @@
-const { ApolloServer, UserInputError, gql } = require("apollo-server");
+const { ApolloServer, UserInputError, AuthenticationError, gql } = require("apollo-server");
 const { v1: uuid } = require("uuid");
 const jwt = require('jsonwebtoken')
 
@@ -79,7 +79,7 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     personCount: () => Person.collection.countDocuments(),
-    allPersons: (root, args) => {
+    allPersons: async (root, args) => {
       if (!args.phone) {
         return Person.find({})
       }
