@@ -18,6 +18,7 @@ mongoose
     console.log("error connection to MongoDB:", error.message);
   });
 
+/*
 let authors = [
   {
     name: "Robert Martin",
@@ -43,7 +44,7 @@ let authors = [
     id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
   },
 ];
-/*
+
 const books = [
   {
     title: "Clean Code",
@@ -166,15 +167,22 @@ const resolvers = {
       await book.save();
       return book;
     },
-    editAuthor: (root, args) => {
-      const author = authors.find((a) => a.name === args.name);
+    editAuthor: async (root, args) => {
+      const author = await Author.findOne({ name: args.name });
+
       if (!author) {
         return null;
       }
 
-      const updatedAuthor = { ...author, born: args.setBornTo };
-      authors = authors.map((a) => (a.name === args.name ? updatedAuthor : a));
-      return updatedAuthor;
+      author.born = args.setBornTo;
+
+      try {
+        await author.save();
+      } catch (error) {
+        console.log(error);
+      }
+
+      return author;
     },
     addAuthor: (root, args) => {
       const author = new Author({ ...args });
