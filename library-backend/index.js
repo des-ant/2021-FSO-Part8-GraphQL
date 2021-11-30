@@ -1,7 +1,12 @@
 /* eslint-disable quotes, no-console, import/no-extraneous-dependencies,
 no-underscore-dangle, consistent-return, function-paren-newline */
 
-const { ApolloServer, UserInputError, gql } = require("apollo-server");
+const {
+  ApolloServer,
+  gql,
+  UserInputError,
+  AuthenticationError,
+} = require("apollo-server");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const Book = require("./models/book");
@@ -96,7 +101,13 @@ const resolvers = {
     bookCount: async (root) => Book.collection.countDocuments({ author: root._id }),
   },
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
+      const { currentUser } = context;
+
+      if (!currentUser) {
+        throw new AuthenticationError("not authenticated");
+      }
+
       let author;
       // Find matching author by name in database
       author = await Author.findOne({ name: args.author });
@@ -124,7 +135,13 @@ const resolvers = {
 
       return book;
     },
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, context) => {
+      const { currentUser } = context;
+
+      if (!currentUser) {
+        throw new AuthenticationError("not authenticated");
+      }
+
       const author = await Author.findOne({ name: args.name });
       author.born = args.setBornTo;
 
@@ -138,7 +155,13 @@ const resolvers = {
 
       return author;
     },
-    addAuthor: (root, args) => {
+    addAuthor: (root, args, context) => {
+      const { currentUser } = context;
+
+      if (!currentUser) {
+        throw new AuthenticationError("not authenticated");
+      }
+
       const author = new Author({ ...args });
 
       try {
