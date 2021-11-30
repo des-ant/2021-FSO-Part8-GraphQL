@@ -34,7 +34,7 @@ const Persons = ({ persons }) => {
       {persons.map(p =>
         <div key={p.name}>
           {p.name} {p.phone}
-          <button onClick={() => showPerson(p.name)} >
+          <button onClick={() => showPerson(p.name)}>
             show address
           </button> 
         </div>  
