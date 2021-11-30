@@ -1,4 +1,5 @@
-/* eslint-disable quotes, no-console, import/no-extraneous-dependencies */
+/* eslint-disable quotes, no-console, import/no-extraneous-dependencies,
+no-underscore-dangle */
 
 const { ApolloServer, gql } = require("apollo-server");
 const mongoose = require("mongoose");
@@ -42,7 +43,7 @@ let authors = [
     id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
   },
 ];
-
+/*
 const books = [
   {
     title: "Clean Code",
@@ -94,6 +95,7 @@ const books = [
     genres: ["classic", "revolution"],
   },
 ];
+*/
 
 const typeDefs = gql`
   type Book {
@@ -142,14 +144,11 @@ const resolvers = {
   Query: {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
-    allBooks: async () => Book.find({}),
+    allBooks: async () => Book.find({}).populate('author'),
     allAuthors: async () => Author.find({}),
   },
   Author: {
-    bookCount: (root) => {
-      const byAuthor = (book) => book.author === root.name;
-      return books.filter(byAuthor).length;
-    },
+    bookCount: async (root) => Book.collection.countDocuments({ author: root._id }),
   },
   Mutation: {
     addBook: async (root, args) => {
