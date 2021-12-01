@@ -23,7 +23,12 @@ const BirthyearForm = (props) => {
   const submit = async (event) => {
     event.preventDefault();
 
-    changeBirthyear({ variables: { name: selectedOption.value, setBornTo: Number(birthyear) } });
+    changeBirthyear({
+      variables: {
+        name: selectedOption.value,
+        setBornTo: birthyear.length > 0 ? Number(birthyear) : null
+      }
+    });
 
     setSelectedOption(null);
     setBirthyear('');

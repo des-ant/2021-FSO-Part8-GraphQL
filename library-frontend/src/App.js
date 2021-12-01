@@ -50,6 +50,7 @@ const App = () => {
 
         <Authors
           show={page === 'authors'}
+          isLoggedIn={false}
         />
 
         <Books
@@ -79,6 +80,7 @@ const App = () => {
 
       <Authors
         show={page === 'authors'}
+        isLoggedIn={true}
       />
 
       <Books
