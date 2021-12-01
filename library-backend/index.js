@@ -91,11 +91,11 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    bookCount: () => Book.collection.countDocuments(),
-    authorCount: () => Author.collection.countDocuments(),
+    bookCount: async () => Book.collection.countDocuments(),
+    authorCount: async () => Author.collection.countDocuments(),
     allBooks: async () => Book.find({}).populate('author'),
     allAuthors: async () => Author.find({}),
-    me: (root, args, context) => context.currentUser,
+    me: async (root, args, context) => context.currentUser,
   },
   Author: {
     bookCount: async (root) => Book.collection.countDocuments({ author: root._id }),
@@ -155,7 +155,7 @@ const resolvers = {
 
       return author;
     },
-    addAuthor: (root, args, context) => {
+    addAuthor: async (root, args, context) => {
       const { currentUser } = context;
 
       if (!currentUser) {
@@ -172,15 +172,16 @@ const resolvers = {
         });
       }
     },
-    createUser: (root, args) => {
+    createUser: async (root, args) => {
       const user = new User({ ...args });
 
-      return user.save()
-        .catch((error) => {
-          throw new UserInputError(error.message, {
-            invalidArgs: args,
-          });
+      try {
+        return user.save();
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
         });
+      }
     },
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username });

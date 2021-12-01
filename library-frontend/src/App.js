@@ -34,6 +34,7 @@ const App = () => {
     setToken(null);
     localStorage.clear();
     client.resetStore();
+    setPage('login');
   };
 
   if (!token) {
@@ -86,6 +87,7 @@ const App = () => {
 
       <NewBook
         show={page === 'add'}
+        setError={notify}
       />
 
     </div>
