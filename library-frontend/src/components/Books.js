@@ -1,20 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 
-import { ALL_BOOKS } from '../queries';
+import { ALL_BOOKS, ALL_GENRES } from '../queries';
 
 const Books = (props) => {
-  const result = useQuery(ALL_BOOKS);
+  const bookResult = useQuery(ALL_BOOKS);
+  const genreResult = useQuery(ALL_GENRES);
+  const [books, setBooks] = useState([]);
+  const [genres, setGenres] = useState([]);
+
+  useEffect(() => {
+    if (bookResult.data) {
+      setBooks(bookResult.data.allBooks);
+    }
+  }, [bookResult]); // eslint-disable-line
+
+  useEffect(() => {
+    if (genreResult.data) {
+      setGenres(genreResult.data.allGenres);
+    }
+  }, [genreResult]); // eslint-disable-line
 
   if (!props.show) {
     return null;
   }
 
-  if (result.loading) {
+  if (bookResult.loading || genreResult.loading) {
     return <div>loading...</div>;
   }
-
-  const books = result.data.allBooks;
 
   return (
     <div>
@@ -31,15 +44,21 @@ const Books = (props) => {
               published
             </th>
           </tr>
-          {books.map(a =>
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
+          {books.map(b =>
+            <tr key={b.title}>
+              <td>{b.title}</td>
+              <td>{b.author.name}</td>
+              <td>{b.published}</td>
             </tr>
           )}
         </tbody>
       </table>
+      <div>
+        {genres.map(g =>
+          <button key={g}>{g}</button>
+        )}
+        <button>all genres</button>
+      </div>
     </div>
   );
 };

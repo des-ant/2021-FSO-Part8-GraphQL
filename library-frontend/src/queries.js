@@ -23,6 +23,7 @@ export const ALL_BOOKS = gql`
         id
         bookCount
       }
+      genres
     }
   }
 `;
@@ -64,5 +65,11 @@ export const LOGIN = gql`
     login(username: $username, password: $password)  {
       value
     }
+  }
+`;
+
+export const ALL_GENRES = gql`
+  query getAllGenres {
+    allGenres
   }
 `;
