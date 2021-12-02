@@ -15,13 +15,13 @@ const Recommendations = ({ show }) => {
       setUser(userResult.data.me);
       filterBooks({ variables: { genre: userResult.data.me.favoriteGenre } });
     }
-  }, [userResult]); // eslint-disable-line
+  }, [userResult.data]); // eslint-disable-line
 
   useEffect(() => {
     if (filterResult.data) {
       setBooks(filterResult.data.filterBooks);
     }
-  }, [filterResult]);
+  }, [filterResult.data]);
 
   if (!show) {
     return null;

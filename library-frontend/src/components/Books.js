@@ -15,13 +15,13 @@ const Books = (props) => {
     if (bookResult.data) {
       setBooks(bookResult.data.allBooks);
     }
-  }, [bookResult]); // eslint-disable-line
+  }, [bookResult.data]); // eslint-disable-line
 
   useEffect(() => {
     if (genreResult.data) {
       setGenres(genreResult.data.allGenres);
     }
-  }, [genreResult]); // eslint-disable-line
+  }, [genreResult.data]); // eslint-disable-line
   
   if (!props.show) {
     return null;

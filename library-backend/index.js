@@ -105,7 +105,7 @@ const resolvers = {
       return sortedGenres;
     },
     filterBooks: async (root, args) => Book.find({})
-      .elemMatch('genres', { $eq: args.genre }),
+      .elemMatch('genres', { $eq: args.genre }).populate('author'),
   },
   Author: {
     bookCount: async (root) => Book.collection.countDocuments({ author: root._id }),
