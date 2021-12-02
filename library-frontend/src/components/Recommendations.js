@@ -1,32 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
+import { useQuery, useLazyQuery } from '@apollo/client';
 import BookList from './BookList';
 
-import { GET_USER, ALL_BOOKS } from '../queries';
+import { GET_USER, FILTER_BOOKS } from '../queries';
 
 const Recommendations = ({ show }) => {
   const userResult = useQuery(GET_USER);
-  const bookResult = useQuery(ALL_BOOKS);
   const [user, setUser] = useState(null);
   const [books, setBooks] = useState([]);
+  const [filterBooks, filterResult] = useLazyQuery(FILTER_BOOKS);
 
   useEffect(() => {
     if (userResult.data) {
       setUser(userResult.data.me);
+      filterBooks({ variables: { genre: userResult.data.me.favoriteGenre } });
     }
   }, [userResult]); // eslint-disable-line
 
   useEffect(() => {
-    if (bookResult.data) {
-      setBooks(bookResult.data.allBooks);
+    if (filterResult.data) {
+      setBooks(filterResult.data.filterBooks);
     }
-  }, [bookResult]); // eslint-disable-line
+  }, [filterResult]);
 
   if (!show) {
     return null;
   }
 
-  if (userResult.loading || bookResult.loading) {
+  if (userResult.loading || filterResult.loading) {
     return <div>loading...</div>;
   }
 
