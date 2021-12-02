@@ -60,7 +60,7 @@ const typeDefs = gql`
     allAuthors: [Author!]!
     me: User
     allGenres: [String!]!
-    filterBooks(genre: String!): [Book!]!
+    filterBooks(genre: String): [Book!]!
   }
 
   type Mutation {
@@ -104,8 +104,14 @@ const resolvers = {
       const sortedGenres = genres.sort();
       return sortedGenres;
     },
-    filterBooks: async (root, args) => Book.find({})
-      .elemMatch('genres', { $eq: args.genre }).populate('author'),
+    filterBooks: async (root, args) => {
+      if (!args.genre) {
+        return Book.find({}).populate('author');
+      }
+      return Book.find({})
+        .elemMatch('genres', { $eq: args.genre })
+        .populate('author');
+    },
   },
   Author: {
     bookCount: async (root) => Book.collection.countDocuments({ author: root._id }),
