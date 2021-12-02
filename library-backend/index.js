@@ -60,6 +60,7 @@ const typeDefs = gql`
     allAuthors: [Author!]!
     me: User
     allGenres: [String!]!
+    filterBooks(genre: String!): [Book!]!
   }
 
   type Mutation {
@@ -103,6 +104,8 @@ const resolvers = {
       const sortedGenres = genres.sort();
       return sortedGenres;
     },
+    filterBooks: async (root, args) => Book.find({})
+      .elemMatch('genres', { $eq: args.genre }),
   },
   Author: {
     bookCount: async (root) => Book.collection.countDocuments({ author: root._id }),
