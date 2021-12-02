@@ -8,6 +8,7 @@ const Books = (props) => {
   const genreResult = useQuery(ALL_GENRES);
   const [books, setBooks] = useState([]);
   const [genres, setGenres] = useState([]);
+  const [filter, setFilter] = useState(null);
 
   useEffect(() => {
     if (bookResult.data) {
@@ -20,7 +21,7 @@ const Books = (props) => {
       setGenres(genreResult.data.allGenres);
     }
   }, [genreResult]); // eslint-disable-line
-
+  
   if (!props.show) {
     return null;
   }
@@ -28,6 +29,20 @@ const Books = (props) => {
   if (bookResult.loading || genreResult.loading) {
     return <div>loading...</div>;
   }
+
+  const filterGenre = (event) => {
+    event.preventDefault();
+    setFilter(event.target.value);
+  };
+
+  const resetFilter = (event) => {
+    event.preventDefault();
+    setFilter(null);
+  };
+
+  const booksToShow = (filter !== null)
+    ? books.filter(b => b.genres.includes(filter))
+    : books;
 
   return (
     <div>
@@ -44,7 +59,7 @@ const Books = (props) => {
               published
             </th>
           </tr>
-          {books.map(b =>
+          {booksToShow.map(b =>
             <tr key={b.title}>
               <td>{b.title}</td>
               <td>{b.author.name}</td>
@@ -55,9 +70,15 @@ const Books = (props) => {
       </table>
       <div>
         {genres.map(g =>
-          <button key={g}>{g}</button>
+          <button
+            key={g}
+            value={g}
+            onClick={filterGenre}
+          >
+            {g}
+          </button>
         )}
-        <button>all genres</button>
+        <button onClick={resetFilter}>all genres</button>
       </div>
     </div>
   );
