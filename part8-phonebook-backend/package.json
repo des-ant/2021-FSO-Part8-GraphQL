@@ -10,9 +10,9 @@
   "author": "des-ant",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^3.5.0",
+    "apollo-server": "^2.25.3",
     "dotenv": "^10.0.0",
-    "graphql": "^16.0.1",
+    "graphql": "^15.5.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.13",
     "mongoose-unique-validator": "^3.0.0",
