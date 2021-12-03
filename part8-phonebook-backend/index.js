@@ -23,6 +23,8 @@ mongoose.connect(config.MONGODB_URI)
     console.log('error connection to MongoDB:', error.message)
   })
 
+mongoose.set('debug', true);
+
 const typeDefs = gql`
   type Address {
     street: String!
@@ -33,6 +35,7 @@ const typeDefs = gql`
     name: String!
     phone: String
     address: Address!
+    friendOf: [User!]!
     id: ID!
   }
 
@@ -104,6 +107,15 @@ const resolvers = {
         street: root.street,
         city: root.city
       }
+    },
+    friendOf: async (root) => {
+      const friends = await User.find({
+        friends: {
+          $in: [root._id]
+        } 
+      })
+
+      return friends
     }
   },
   Mutation: {
