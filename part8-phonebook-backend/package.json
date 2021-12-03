@@ -13,6 +13,7 @@
     "apollo-server": "^2.25.3",
     "dotenv": "^10.0.0",
     "graphql": "^15.5.0",
+    "graphql-subscriptions": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.13",
     "mongoose-unique-validator": "^3.0.0",
