@@ -31,6 +31,8 @@ mongoose
     console.log("error connection to MongoDB:", error.message);
   });
 
+mongoose.set('debug', true);
+
 const typeDefs = gql`
   type Book {
     title: String!
@@ -45,6 +47,7 @@ const typeDefs = gql`
     born: Int
     id: ID!
     bookCount: Int!
+    books: [Book!]!
   }
 
   type User {
@@ -58,7 +61,6 @@ const typeDefs = gql`
   }
 
   type Query {
-    bookCount: Int!
     authorCount: Int!
     allBooks: [Book!]!
     allAuthors: [Author!]!
@@ -96,7 +98,6 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async () => Book.find({}).populate('author'),
     allAuthors: async () => Author.find({}),
@@ -120,9 +121,6 @@ const resolvers = {
         .elemMatch('genres', { $eq: args.genre })
         .populate('author');
     },
-  },
-  Author: {
-    bookCount: async (root) => Book.collection.countDocuments({ author: root._id }),
   },
   Mutation: {
     addBook: async (root, args, context) => {
@@ -151,6 +149,10 @@ const resolvers = {
 
       try {
         await book.save();
+        // Update associated book properties in author
+        author.books = author.books.concat(book);
+        author.bookCount += 1;
+        await author.save();
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
